@@ -20,7 +20,6 @@ faceCascade = cv2.CascadeClassifier(cv2.__path__[0]+'\data\haarcascade_frontalfa
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 
 path = os.path.dirname(__file__)
-#recognizer.read(path+'/trainer/trainer.yml')
 
 
 
@@ -41,7 +40,7 @@ def face_register_and_train():
         faces=face_detection(tmp_gray)
         for (x,y,w,h) in faces:
             #몇 번째 사진인지만 저장
-            cv2.imwrite("dataSet/face-"+'.'+ str(num_picture) + ".jpg", tmp_gray) # dataSet 폴더에 저장
+            cv2.imwrite("./face-"+'.'+ str(num_picture) + ".jpg", tmp_gray) # dataSet 폴더에 저장
             num_picture+=1
             print(num_picture,'번째 사진 저장중')
             images.append(tmp_gray[y:y+h,x:x+w])
@@ -59,10 +58,7 @@ def cam(img):
     while True:
         ret, frame = video.read()
         
-        #사이즈 조정
-        #480, 640, 3 ( , , channels)
-        #rows,cols,_=frame.shape
-        #print(rows,cols,_)
+
         
         frame_gray =cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
@@ -88,16 +84,14 @@ def cam(img):
             train=False
         
         
-        
-        
         # 졸음 검출
         #if button == 1:
             # 졸음 검출 함수
             
         
         #화면에 이미지 전달
-        cv2.imwrite('./pic/now.jpg',frame)
-        img.setPixmap(QPixmap('./pic/now.jpg'))
+        cv2.imwrite('./now.jpg',frame)
+        img.setPixmap(QPixmap('./now.jpg'))
         
     
 
@@ -105,20 +99,12 @@ def cam(img):
 
 class MyApp(QWidget):
     def __init__(self):
-        #print('흐름도')
         super().__init__()
         self.page()
-        #print(id(self))
+
         
     
-    
-    
     def AddPerson(self,e):
-        # 이건 노트북에서만 이름 등록하게
-        #self.line_edit=QLineEdit(self)
-        #self.line_edit.move(100,100)
-        #text=self.line_edit.text()
-        #print(text)
         global train
         train = True
     
@@ -134,12 +120,10 @@ class MyApp(QWidget):
         #얼굴 등록 버튼 누르면 
         AddButton.mousePressEvent = self.AddPerson
         
-        #따라가기 위해 만든걸수도 있음.
-        #AddButton.resize(numX,numY)
         AddButton.move(480, 320)
         AddButton.setText("add")
         
-        # 공간을 인자로 넘기고 나중에 그 공간에 이미지 받음
+        # space 넘겨주고 frame 받아서 출력함.
         sub = threading.Thread(target = cam, args=[space])
         sub.daemon = True
         sub.start()
